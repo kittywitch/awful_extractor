@@ -62,7 +62,7 @@ def main():
         content = f.read().decode("utf-8")
     soup = BeautifulSoup(content, "html.parser")
     dict_table = {}
-    songs = []
+    songs = {}
     for tbnum, table in enumerate(soup.select(".mw-parser-output table")):
         if tbnum not in dict_table:
             dict_table[tbnum] = {}
@@ -91,12 +91,15 @@ def main():
             fvb = row[9:13]
             sb = row[13:17]
             eb = row[17:21]
-            songs.append(Song(th, row[0], row[1], row[2], row[3], row[4], fb, fvb, sb, eb))
-    print(songs)
-    print(len(songs))
-    songs_encodable = [x.json_conv() for x in songs]
-    f = open("djmaxrespectv.json", "w")
-    f.write(json.dumps(songs_encodable, indent=4, sort_keys=True))
-    f.close()
+            if th in songs:
+                songs[th].append(Song(th, row[0], row[1], row[2], row[3], row[4], fb, fvb, sb, eb))
+            else:
+                songs[th] = [Song(th, row[0], row[1], row[2], row[3], row[4], fb, fvb, sb, eb)]
+    for pack, song_list in songs.items():
+        print(pack, len(song_list))
+        songs_encodable = [x.json_conv() for x in song_list]
+        f = open(f"djmaxrespectv-{pack.lower().replace(' ', '-')}.json", "w")
+        f.write(json.dumps(songs_encodable, indent=4, sort_keys=True))
+        f.close()
 
 main()
