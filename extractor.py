@@ -71,13 +71,10 @@ def main():
             for elex in ele.find_all("td"):
                 if num not in dict_table[tbnum]:
                     thes = table.find_all("th")
-                    print(len(thes))
                     if len(thes) > 0:
                         if thes[0].string.replace("\n", "").strip() == "TU":
                             th_prim = None
                         elif len(thes) > 25:
-                            for i, j in enumerate(thes):
-                                print(i, j)
                             th_prim = thes[25]
                         elif len(thes) > 0:
                             th_prim = thes[0]
@@ -94,10 +91,8 @@ def main():
                 else:
                     dict_table[tbnum][num].append(elex.get_text().replace("\n", "").strip())
     els = list(dict_table.values())
-    print(len(els))
     del els[-1]
     del els[0:2]
-    print(len(els))
     #print(els)
     for table in els:
         for row in table.values():
