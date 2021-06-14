@@ -7,7 +7,13 @@ class Song:
     def __init__(self, pack, title, bpm, composer, vocalist, genre, fb, fvb, sb, eb):
         self.pack = pack;
         self.title = title;
-        self.bpm = bpm;
+        if "-" in bpm:
+            bpms = bpm.split("-")
+            bottom = bpms[0]
+            top = bpms[1]
+            self.bpm = (float(bottom)+float(top))/2
+        else:
+            self.bpm = float(bpm)
         self.composer = composer;
         self.vocalist = vocalist;
         self.genre = genre;
