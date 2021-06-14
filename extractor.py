@@ -37,7 +37,7 @@ class Song:
                 if stars != "-" and stars != "":
                     difficulties.append({
                         "diffName":f"{beats} {diff}",
-                        "diffNumber":int(stars),
+                        "diffNumber":int(f"{beats.replace('B','')}{stars}"),
                         "players":1,
                         "double":False
                         })
