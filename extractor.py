@@ -28,12 +28,13 @@ class Song:
         diff_list = {k:dict(zip(diff_names,v)) for (k,v) in diff_sets.items()}
         for beats, diffs in diff_list.items():
             for diff, stars in diffs.items():
-                difficulties.append({
-                    "diffName":f"{beats} {diff}",
-                    "diffNumber":stars,
-                    "players":1,
-                    "double":False
-                    })
+                if stars != "-":
+                    difficulties.append({
+                        "diffName":f"{beats} {diff}",
+                        "diffNumber":str(stars),
+                        "players":1,
+                        "double":False
+                        })
         return difficulties
 
     def json_conv(self):
@@ -69,10 +70,25 @@ def main():
         for num, ele in enumerate(table.find_all("tr")):
             for elex in ele.find_all("td"):
                 if num not in dict_table[tbnum]:
-                    if (table.th is not None) and (table.th.string.replace("\n", "").strip() == "DOK2 - ONLY ON" or table.th.string.replace("\n", "").strip() == "TAP SONIC"):
+                    thes = table.find_all("th")
+                    print(len(thes))
+                    if len(thes) > 0:
+                        if thes[0].string.replace("\n", "").strip() == "TU":
+                            th_prim = None
+                        elif len(thes) > 25:
+                            for i, j in enumerate(thes):
+                                print(i, j)
+                            th_prim = thes[25]
+                        elif len(thes) > 0:
+                            th_prim = thes[0]
+                        else:
+                            th_prim = None
+                        if th_prim is not None and th_prim != "":
+                            th_prim = th_prim.string.replace("\n", "").strip()
+                    if (th_prim != "") and (th_prim == "DOK2 - ONLY ON"):
                         pass
-                    elif table.th is not None:
-                        dict_table[tbnum][num] = [table.th.string.replace("\n", "").strip(), elex.get_text().replace("\n", "").strip()]
+                    elif th_prim != "":
+                        dict_table[tbnum][num] = [th_prim, elex.get_text().replace("\n", "").strip()]
                     else:
                         dict_table[tbnum][num] = [elex.get_text().replace("\n", "").strip()]
                 else:
@@ -82,11 +98,11 @@ def main():
     del els[-1]
     del els[0:2]
     print(len(els))
-    print(els)
+    #print(els)
     for table in els:
         for row in table.values():
             th = row.pop(0)
-            print(row)
+            #print(row)
             fb = row[5:9]
             fvb = row[9:13]
             sb = row[13:17]
@@ -95,11 +111,14 @@ def main():
                 songs[th].append(Song(th, row[0], row[1], row[2], row[3], row[4], fb, fvb, sb, eb))
             else:
                 songs[th] = [Song(th, row[0], row[1], row[2], row[3], row[4], fb, fvb, sb, eb)]
+    total_songs = 0
     for pack, song_list in songs.items():
+        total_songs += len(song_list)
         print(pack, len(song_list))
         songs_encodable = [x.json_conv() for x in song_list]
         f = open(f"djmaxrespectv-{pack.lower().replace(' ', '-')}.json", "w")
         f.write(json.dumps(songs_encodable, indent=4, sort_keys=True))
         f.close()
+    print(f"Total songs: {total_songs}")
 
 main()
