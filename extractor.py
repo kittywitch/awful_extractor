@@ -28,10 +28,10 @@ class Song:
         diff_list = {k:dict(zip(diff_names,v)) for (k,v) in diff_sets.items()}
         for beats, diffs in diff_list.items():
             for diff, stars in diffs.items():
-                if stars != "-":
+                if stars != "-" and stars != "":
                     difficulties.append({
                         "diffName":f"{beats} {diff}",
-                        "diffNumber":str(stars),
+                        "diffNumber":int(stars),
                         "players":1,
                         "double":False
                         })
