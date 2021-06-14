@@ -82,7 +82,7 @@ def main():
                             th_prim = None
                         if th_prim is not None and th_prim != "":
                             th_prim = th_prim.string.replace("\n", "").strip()
-                    if th_prim == "RESPECT V":
+                    if th_prim == "RESPECT V" or th_prim == "TAP SONIC":
                         th_prim = "RESPECT"
                     if (th_prim != "") and (th_prim == "DOK2 - ONLY ON"):
                         pass
